@@ -20,12 +20,12 @@ h = 20;
  
 
 % Seats Demand
-% ? (Xijk)(Sk) ? (Seat Demand from airport i to j in kth aircraft)
+% Sum (Xijk)(Sk) >= (Seat Demand from airport i to j in kth aircraft)
 seatDemand = [1350 850 1700 1100 950 1000];
 
 % Flight Frequency
 % (Fij)
-% ? (Xijk) ? (Flight Frequency from airport i to j)
+% Sum (Xijk) >= (Flight Frequency from airport i to j)
 flightFrequency = [7 6 10 11 8 7];
 
 % Time Taken
@@ -33,11 +33,12 @@ flightFrequency = [7 6 10 11 8 7];
 timeTaken = [2.25 2.25 5.25 5.25 6 6];
 
 % Aircraft Availability
-% ? (Xijk)(h) ? (Aij)(Fij)(Availability of aircraft)
+% Sum (Xijk)(h) >= (Aij)(Fij)(Availability of aircraft)
 aircraftAvailability = flightFrequency.*timeTaken;
 
 b = -[seatDemand aircraftAvailability flightFrequency];
 
+% Seats Demand
 A1 = [ 
 s1 s2 0 0 0 0 0 0 0 0 0 0;
 0 0 s1 s2 0 0 0 0 0 0 0 0;
@@ -47,6 +48,7 @@ s1 s2 0 0 0 0 0 0 0 0 0 0;
 0 0 0 0 0 0 0 0 0 0 s1 s2;
 ];
 
+% Flight Frequency
 A2 = [
 h h 0 0 0 0 0 0 0 0 0 0;
 0 0 h h 0 0 0 0 0 0 0 0;
@@ -56,6 +58,7 @@ h h 0 0 0 0 0 0 0 0 0 0;
 0 0 0 0 0 0 0 0 0 0 h h;
 ];
 
+% Aircraft Availability
 A3 = [
 1 1 0 0 0 0 0 0 0 0 0 0;
 0 0 1 1 0 0 0 0 0 0 0 0;
@@ -64,6 +67,7 @@ A3 = [
 0 0 0 0 0 0 0 0 1 1 0 0;
 0 0 0 0 0 0 0 0 0 0 1 1
 ];
+
 A = -[A1;A2;A3];
 
 %% Equality Constraint
@@ -77,13 +81,13 @@ Aeq = [
     0  -1  0  1  0  0  0  0  0  1  0  -1;
     0  0  0  0  0  -1  0  1  0  -1  0  1;
 ];
-Beq = [0;0;0;0;0;0];
+Beq = zeros(1,6);
 
 %% Creating Objective Function
 
 % Ck = Operating cost of kth aircraft per flight hour
 % Cost Required
-% ? (Xijk)(Ck)(Aij)
+% Sum (Xijk)(Ck)(Aij)
 cost = [5300 2845 5300 2845 5300 2845 5300 2845 5300 2845 5300 2845];
 timeTaken = [2.25 2.25 2.25 2.25 5.25 5.25 5.25 5.25 6 6 6 6];
 f = cost.*timeTaken;
