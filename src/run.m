@@ -1,16 +1,19 @@
-% Getting Objective Function,Subjective Funtion / Constraint
+%% Getting Objective Function,Subjective Funtion / Constraint
 
 [f,intcon,A,b,Aeq,Beq] = lpp();
+
 % Creating Option
 options = optimoptions(@intlinprog,'display','off');
 
-lb = [];
-ub = [];
-
+lb = zeros(1,12);
+ub = ones(1,12)*10;
 
 [x,fval,exitflag,output] = intlinprog(f,intcon,A,b,Aeq,Beq,lb,ub,options);
 
 x = int8(x);
+
+%% Creating Graph
+
 Aircraft = ['Aircraft-1';'Aircraft-2'];
 a1 = x(1:2:end)';
 a2 = x(2:2:end)';
@@ -36,9 +39,12 @@ T = table(Aircraft,Route__1_2,Route__2_1,Route__1_3,Route__3_1,Route__2_3,Route_
 disp(T);
 fprintf("Optimal Cost is: $%f \n",fval);
 
+%% Plotting Graph
+
 plot(a1,'b-o');
 hold on;
 plot(a2,'g-*');
+hold off;
 
 xlabel('Route_{(i to j airport)}','FontSize',12,'Color', 'g');
 ylabel('Frequency_{(in numbers)}','FontSize',12,'Color', 'g');
